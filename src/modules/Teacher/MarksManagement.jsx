@@ -10,7 +10,6 @@ function MarksManagement() {
       .then(res => res.json())
       .then(data => {
         setStudents(data.users);
-        // Initialize marks with empty strings
         const initMarks = {};
         data.users.forEach(u => {
           initMarks[u.id] = '';

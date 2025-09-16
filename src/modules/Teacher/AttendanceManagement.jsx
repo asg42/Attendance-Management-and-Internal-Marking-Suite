@@ -10,7 +10,6 @@ function AttendanceManagement() {
       .then(res => res.json())
       .then(data => {
         setStudents(data.users);
-        // Initialize all marked present by default
         const initAttendance = {};
         data.users.forEach(u => {
           initAttendance[u.id] = true;
@@ -27,7 +26,6 @@ function AttendanceManagement() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // For now just alert saved data
     alert('Attendance saved: ' + JSON.stringify(attendance));
   };
 

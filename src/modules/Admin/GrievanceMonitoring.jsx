@@ -1,18 +1,19 @@
 import React, { useState, useEffect } from 'react';
 
-function GrievanceHandling() {
+function GrievanceMonitoring() {
+  // Mock grievance data
   const [grievances, setGrievances] = useState(() => {
-    const saved = localStorage.getItem('teacherGrievances');
+    const saved = localStorage.getItem('adminGrievances');
     return saved ? JSON.parse(saved) : [
       { id: 1, studentName: 'Alice Johnson', subject: 'Marks discrepancy', description: 'Marks not updated properly.', response: '', status: 'Pending' },
-      { id: 2, studentName: 'Bob Smith', subject: 'Attendance issue', description: 'Attendance not reflecting.', response: '', status: 'Pending' },
+      { id: 2, studentName: 'Bob Smith', subject: 'Attendance issue', description: 'Attendance not reflecting.', response: '', status: 'Pending' }
     ];
   });
 
   const [responses, setResponses] = useState({});
 
   useEffect(() => {
-    localStorage.setItem('teacherGrievances', JSON.stringify(grievances));
+    localStorage.setItem('adminGrievances', JSON.stringify(grievances));
   }, [grievances]);
 
   const handleResponseChange = (id, value) => {
@@ -22,18 +23,20 @@ function GrievanceHandling() {
   const handleRespond = (id) => {
     const responseText = responses[id];
     if (!responseText) {
-      alert('Please enter a response.');
+      alert('Please enter a response');
       return;
     }
-    setGrievances(prev => prev.map(g => g.id === id ? { ...g, response: responseText, status: 'Responded' } : g));
+    setGrievances(prev =>
+      prev.map(g => g.id === id ? { ...g, response: responseText, status: 'Responded' } : g)
+    );
     setResponses(prev => ({ ...prev, [id]: '' }));
   };
 
   return (
     <div>
-      <h2>Grievance Handling</h2>
+      <h2>Grievance Monitoring</h2>
       {grievances.length === 0 ? (
-        <p>No grievances to handle.</p>
+        <p>No grievances to display</p>
       ) : (
         grievances.map(g => (
           <div key={g.id} className="card mb-3">
@@ -49,7 +52,7 @@ function GrievanceHandling() {
                     rows="2"
                     placeholder="Enter your response"
                     value={responses[g.id] || ''}
-                    onChange={e => handleResponseChange(g.id, e.target.value)}
+                    onChange={(e) => handleResponseChange(g.id, e.target.value)}
                   />
                   <button className="btn btn-primary" onClick={() => handleRespond(g.id)}>Submit Response</button>
                 </>
@@ -62,4 +65,4 @@ function GrievanceHandling() {
   );
 }
 
-export default GrievanceHandling;
+export default GrievanceMonitoring;

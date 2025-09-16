@@ -1,21 +1,16 @@
-// src/modules/UserManagement/Login.jsx
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 function Login({ onLogin }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState('student'); // default role
+  const [role, setRole] = useState('student');
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    // Simple validation and dummy login
     if (username && password) {
-      // Assign role based on selection
       onLogin({ username, role });
       navigate(`/${role}`);
     } else {
@@ -31,7 +26,7 @@ function Login({ onLogin }) {
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
           <label htmlFor="username" className="form-label">Username</label>
-          <input 
+          <input
             type="text"
             className="form-control"
             id="username"
@@ -43,7 +38,7 @@ function Login({ onLogin }) {
 
         <div className="mb-3">
           <label htmlFor="password" className="form-label">Password</label>
-          <input 
+          <input
             type="password"
             className="form-control"
             id="password"

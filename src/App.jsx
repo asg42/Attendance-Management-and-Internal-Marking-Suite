@@ -1,23 +1,31 @@
-// src/App.jsx
-
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate, useLocation, useNavigate, Link } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation, useNavigate, Link } from 'react-router-dom';
 
 import Login from './modules/UserManagement/Login.jsx';
 import StudentDashboard from './modules/Student/StudentDashboard.jsx';
 import TeacherDashboard from './modules/Teacher/TeacherDashboard.jsx';
-import AdminDashboard from './modules/Admin/AdminDashboard.jsx';
+import AttendanceManagement from './modules/Teacher/AttendanceManagement.jsx';
+import MarksManagement from './modules/Teacher/MarksManagement.jsx';
+import GrievanceHandling from './modules/Teacher/GrievanceHandling.jsx';
 
-// Role-based route guard component
+import AdminDashboard from './modules/Admin/AdminDashboard.jsx';
+import UserManagement from './modules/Admin/UserManagement.jsx';
+import SubjectManagement from './modules/Admin/SubjectManagement.jsx';
+import LockSubmissions from './modules/Admin/LockSubmissions.jsx';
+import AnalyticsDashboard from './modules/Admin/AnalyticsDashboard.jsx';
+import GrievanceMonitoring from './modules/Admin/GrievanceMonitoring.jsx';
+
+import NotFound from './modules/Common/NotFound.jsx';
+import Unauthorized from './modules/Common/Unauthorized.jsx';
+
 function RequireAuth({ user, allowedRoles, children }) {
   const location = useLocation();
   if (!user || !allowedRoles.includes(user.role)) {
-    return <Navigate to="/login" state={{ from: location }} replace />;
+    return <Navigate to="/unauthorized" state={{ from: location }} replace />;
   }
   return children;
 }
 
-// Navbar component showing logout and role-specific links
 function Navbar({ user, onLogout }) {
   const role = user?.role;
 
@@ -68,7 +76,12 @@ function App() {
       <Navbar user={user} onLogout={handleLogout} />
 
       <Routes>
+        {/* Redirect root URL to /login */}
+        <Route path="/" element={<Navigate to="/login" replace />} />
+
         <Route path="/login" element={<Login onLogin={handleLogin} />} />
+
+        <Route path="/unauthorized" element={<Unauthorized />} />
 
         <Route
           path="/student/*"
@@ -86,7 +99,12 @@ function App() {
               <TeacherDashboard />
             </RequireAuth>
           }
-        />
+        >
+          <Route path="attendance" element={<AttendanceManagement key="attendance" />} />
+          <Route path="marks" element={<MarksManagement key="marks" />} />
+          <Route path="grievance" element={<GrievanceHandling key="grievance" />} />
+          <Route path="" element={<p>Please select a module.</p>} />
+        </Route>
 
         <Route
           path="/admin/*"
@@ -95,18 +113,20 @@ function App() {
               <AdminDashboard />
             </RequireAuth>
           }
-        />
+        >
+          <Route path="users" element={<UserManagement />} />
+          <Route path="subjects" element={<SubjectManagement />} />
+          <Route path="locks" element={<LockSubmissions />} />
+          <Route path="analytics" element={<AnalyticsDashboard />} />
+          <Route path="grievances" element={<GrievanceMonitoring />} />
+          <Route path="" element={<p>Please select a module.</p>} />
+        </Route>
 
-        <Route path="*" element={<Navigate to={user ? `/${user.role}` : '/login'} replace />} />
+        {/* Catch-all 404 page */}
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </>
   );
 }
 
-export default function RouterWrapper() {
-  return (
-    <Router>
-      <App />
-    </Router>
-  );
-}
+export default App;
